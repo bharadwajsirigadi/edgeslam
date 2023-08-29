@@ -27,14 +27,22 @@
 #include<opencv2/core/core.hpp>
 
 #include<System.h>
+#include <signal.h>
 
 // Edge-SLAM
 #include <string>
+
 
 using namespace std;
 
 void LoadImages(const string &strAssociationFilename, vector<string> &vstrImageFilenamesRGB,
                 vector<string> &vstrImageFilenamesD, vector<double> &vTimestamps);
+
+void signal_callback_handler(int signum) {
+   cout << "Caught signal " << signum << endl;
+   // Terminate program
+   exit(signum);
+}
 
 int main(int argc, char **argv)
 {
@@ -158,7 +166,8 @@ int main(int argc, char **argv)
         // Edge-SLAM
         // Create SLAM system. It initializes all system threads and gets ready to process frames.
         ORB_SLAM2::System SLAM(argv[1],argv[2],RunType,ORB_SLAM2::System::RGBD,true);
-
+	
+	    signal(SIGINT, signal_callback_handler);
         // Edge-SLAM: split shutdown between client and server
         // Stop all threads
         SLAM.ServerShutdown();
