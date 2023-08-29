@@ -93,10 +93,11 @@ System::System(const string &strVocFile, const string &strSettingsFile, std::str
         //Initialize the Local Mapping thread and launch
         mpLocalMapper = new LocalMapping(mpMap, mpKeyFrameDatabase, mpVocabulary, strSettingsFile, mSensor==MONOCULAR);
         mptLocalMapping = new thread(&ORB_SLAM2::LocalMapping::Run,mpLocalMapper);
-
+        
         //Initialize the Loop Closing thread and launch
         mpLoopCloser = new LoopClosing(mpMap, mpKeyFrameDatabase, mpVocabulary, mSensor!=MONOCULAR);
         mptLoopClosing = new thread(&ORB_SLAM2::LoopClosing::Run, mpLoopCloser);
+        
     }
 
     if (RunType.compare("client") == 0){
@@ -120,6 +121,8 @@ System::System(const string &strVocFile, const string &strSettingsFile, std::str
         mpLocalMapper->SetLoopCloser(mpLoopCloser);
         //mpLoopCloser->SetTracker(mpTracker);
         mpLoopCloser->SetLocalMapper(mpLocalMapper);
+        mptLocalMapping->join();
+        mptLoopClosing->join();
     }
 }
 
@@ -143,7 +146,9 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
             /* Edge-SLAM: this branch is visited on client, so comment local mapping variables
             mpLocalMapper->RequestStop();
 
-            // Wait until Local Mapping has effectively stopped
+            // Wait until Locnptl/pthread_mutex_lock.c:67
+67	../nptl/pthread_mutex_lock.c: No such file or directory.
+al Mapping has effectively stopped
             while(!mpLocalMapper->isStopped())
             {
                 usleep(1000);
