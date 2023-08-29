@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-
+include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 
 # Edge-SLAM: replaced next include statement with the content of rosbuild.cmake
 # and made edits as indicated below to prevent cmake deprecated policy warnings
@@ -15,8 +15,8 @@ if(${CMAKE_VERSION} VERSION_LESS "3.0")
   cmake_policy(SET CMP0011 OLD)
 endif()
 
-macro(rosbuild_catkinize)
-endmacro()
+# macro(rosbuild_catkinize)
+# endmacro()
 
 # Edge-SLAM: added cmake version check if statement
 # Policy settings to prevent warnings on 2.6 but ensure proper operation on
@@ -92,13 +92,13 @@ endif()
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../../../cmake_modules)
 
-find_package(OpenCV 3.0 QUIET)
-if(NOT OpenCV_FOUND)
-   find_package(OpenCV 2.4.3 QUIET)
-   if(NOT OpenCV_FOUND)
-      message(FATAL_ERROR "OpenCV > 2.4.3 not found.")
-   endif()
-endif()
+find_package(OpenCV 3.0 REQUIRED)
+# if(NOT OpenCV_FOUND)
+#    find_package(OpenCV 2.4.3 QUIET)
+#    if(NOT OpenCV_FOUND)
+#       message(FATAL_ERROR "OpenCV > 2.4.3 not found.")
+#    endif()
+# endif()
 
 find_package(Eigen3 3.1.0 REQUIRED)
 find_package(Pangolin REQUIRED)
